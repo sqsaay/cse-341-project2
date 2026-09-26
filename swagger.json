@@ -5,7 +5,7 @@
     "description": "API for managing owners and pets",
     "version": "1.0.0"
   },
-  "host": "cse-341-project2-2szy.onrender.com/:3010",
+  "host": "cse-341-project2-2szy.onrender.com",
   "basePath": "/",
   "schemes": ["https"],
   "paths": {
