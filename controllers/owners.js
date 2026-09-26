@@ -60,8 +60,56 @@ const createOwner = async (req, res) => {
     }
 };
 
+const updateOwner = async (req, res) => {
+    //swagger.tags=['Owners']
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ message: 'Invalid owner ID' });
+    }
+    if (!isDocument(req.body)) {
+        return res.status(400).json({ message: 'Owner must be a non-empty JSON object' });
+    }
+
+    const owner = { ...req.body };
+    delete owner._id;
+
+    try {
+        const result = await mongoDb.getDatabase()
+            .db(database)
+            .collection('owners')
+            .replaceOne({ _id: new ObjectId(req.params.id) }, owner);
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: 'Owner not found' });
+        }
+        return res.status(204).send();
+    } catch (err) {
+        return res.status(500).json({ message: 'Failed to update owner' });
+    }
+};
+
+const deleteOwner = async (req, res) => {
+    //swagger.tags=['Owners']
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ message: 'Invalid owner ID' });
+    }
+
+    try {
+        const result = await mongoDb.getDatabase()
+            .db(database)
+            .collection('owners')
+            .deleteOne({ _id: new ObjectId(req.params.id) });
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'Owner not found' });
+        }
+        return res.status(204).send();
+    } catch (err) {
+        return res.status(500).json({ message: 'Failed to delete owner' });
+    }
+};
+
 module.exports = {
     getAllOwners,
     getOwnerById,
-    createOwner
+    createOwner,
+    updateOwner,
+    deleteOwner
 }   

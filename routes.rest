@@ -31,14 +31,14 @@ Content-Type: application/json
 GET http://localhost:3010/pets
 
 ### GET SINGLE PET
-GET http://localhost:3010/pets/65f1b2000000000000000004
+GET http://localhost:3010/pets/6ab8303b6dbbb6cb68ac815e
 
 ### CREATE PET
 POST http://localhost:3010/pets HTTP/1.1
 Content-Type: application/json
 
 {
-   "ownerId": { "$oid": "6ab826718a947d55fc037005" },
+   "ownerId": { "$oid": "6ab827468a947d55fc037006" },
     "name": "Sky",
     "species": "Dog",
     "breed": "Siberian Husky",
@@ -62,4 +62,35 @@ Content-Type: application/json
     "status": "Active"
 }
 
+### UPDATE PET
+PUT http://localhost:3010/pets/6ab8303b6dbbb6cb68ac815e HTTP/1.1
+Content-Type: application/json
 
+{
+   "ownerId": { "$oid": "6ab826718a947d55fc037005" },
+    "name": "Sky-Blue",
+    "species": "Dog",
+    "breed": "Siberian Husky",
+    "sex": "Female",
+    "neutered": true,
+    "birthDate": { "$date": "2021-09-05T00:00:00Z" },
+    "weightKg": 31.4,
+    "microchipNumber": "1234567890123456",
+    "vaccinations": [
+      {
+        "vaccine": "Rabies",
+        "dateAdministered": { "$date": "2025-05-10T00:00:00Z" },
+        "expiresAt": { "$date": "2028-05-10T00:00:00Z" }
+      },
+      {
+        "vaccine": "DHPP",
+        "dateAdministered": { "$date": "2025-05-10T00:00:00Z" },
+        "expiresAt": { "$date": "2026-05-10T00:00:00Z" }
+      }
+    ],
+    "status": "Active"
+}
+
+### DELETE PET
+
+DELETE http://localhost:3010/pets/6ab827468a947d55fc037006 HTTP/1.1

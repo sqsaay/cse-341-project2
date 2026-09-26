@@ -52,8 +52,53 @@ const createPet = async (req, res) => {
     }
 };
 
+const updatePet = async (req, res) => {
+    //swagger.tags=['Pets']
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ message: 'Invalid pet ID' });
+    }
+    if (!isDocument(req.body)) {
+        return res.status(400).json({ message: 'Pet must be a non-empty JSON object' });
+    }
+
+    const pet = { ...req.body };
+    delete pet._id;
+
+    try {
+        const result = await getPetsCollection().replaceOne(
+            { _id: new ObjectId(req.params.id) },
+            pet
+        );
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: 'Pet not found' });
+        }
+        return res.status(204).send();
+    } catch (err) {
+        return res.status(500).json({ message: 'Failed to update pet' });
+    }
+};
+
+const deletePet = async (req, res) => {
+    //swagger.tags=['Pets']
+    if (!ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({ message: 'Invalid pet ID' });
+    }
+
+    try {
+        const result = await getPetsCollection().deleteOne({ _id: new ObjectId(req.params.id) });
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'Pet not found' });
+        }
+        return res.status(204).send();
+    } catch (err) {
+        return res.status(500).json({ message: 'Failed to delete pet' });
+    }
+};
+
 module.exports = {
     getAllPets,
     getPetById,
-    createPet
+    createPet,
+    updatePet,
+    deletePet
 };
