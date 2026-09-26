@@ -1,0 +1,249 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Pet Owner API",
+    "description": "API for managing pet owners and their pets",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3010"
+    }
+  ],
+  "tags": [
+    { "name": "Owners" },
+    { "name": "Pets" }
+  ],
+  "paths": {
+    "/owners": {
+      "get": {
+        "tags": ["Owners"],
+        "summary": "Get all owners",
+        "responses": {
+          "200": {
+            "description": "Owners returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Owner" }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      },
+      "post": {
+        "tags": ["Owners"],
+        "summary": "Create an owner",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/OwnerInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Owner created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Owner" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/owners/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": ["Owners"],
+        "summary": "Get an owner by ID",
+        "responses": {
+          "200": {
+            "description": "Owner returned",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Owner" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/pets": {
+      "get": {
+        "tags": ["Pets"],
+        "summary": "Get all pets",
+        "responses": {
+          "200": {
+            "description": "Pets returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Pet" }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      },
+      "post": {
+        "tags": ["Pets"],
+        "summary": "Create a pet",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PetInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pet created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Pet" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/pets/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": ["Pets"],
+        "summary": "Get a pet by ID",
+        "responses": {
+          "200": {
+            "description": "Pet returned",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Pet" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "MongoDB document ID",
+        "schema": { "type": "string", "pattern": "^[a-fA-F0-9]{24}$" }
+      }
+    },
+    "schemas": {
+      "OwnerInput": {
+        "type": "object",
+        "required": ["firstName", "lastName", "email"],
+        "properties": {
+          "firstName": { "type": "string", "example": "Samantha" },
+          "lastName": { "type": "string", "example": "Salazar" },
+          "email": { "type": "string", "format": "email", "example": "sam@example.com" },
+          "phone": { "type": "string", "example": "+1-555-1234" },
+          "address": {
+            "type": "object",
+            "properties": {
+              "street": { "type": "string" },
+              "city": { "type": "string" },
+              "state": { "type": "string" },
+              "postalCode": { "type": "string" }
+            }
+          },
+          "petIds": {
+            "type": "array",
+            "items": { "type": "string", "description": "Pet MongoDB ID" }
+          },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Owner": {
+        "allOf": [
+          { "$ref": "#/components/schemas/OwnerInput" },
+          {
+            "type": "object",
+            "properties": {
+              "_id": { "type": "string", "example": "65f1a1000000000000000001" }
+            }
+          }
+        ]
+      },
+      "PetInput": {
+        "type": "object",
+        "required": ["name", "species"],
+        "properties": {
+          "ownerId": { "type": "string", "example": "65f1a1000000000000000001" },
+          "name": { "type": "string", "example": "Barnaby" },
+          "species": { "type": "string", "example": "Dog" },
+          "breed": { "type": "string", "example": "Golden Retriever" },
+          "sex": { "type": "string" },
+          "neutered": { "type": "boolean" },
+          "birthDate": { "type": "string", "format": "date" },
+          "weightKg": { "type": "number", "format": "float" },
+          "microchipNumber": { "type": "string", "nullable": true },
+          "vaccinations": { "type": "array", "items": { "type": "object" } },
+          "status": { "type": "string", "example": "Active" }
+        }
+      },
+      "Pet": {
+        "allOf": [
+          { "$ref": "#/components/schemas/PetInput" },
+          {
+            "type": "object",
+            "properties": {
+              "_id": { "type": "string", "example": "65f1b2000000000000000001" }
+            }
+          }
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": { "message": { "type": "string" } }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Invalid request",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      },
+      "NotFound": {
+        "description": "Document not found",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      },
+      "ServerError": {
+        "description": "Server error",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      }
+    }
+  }
+}
