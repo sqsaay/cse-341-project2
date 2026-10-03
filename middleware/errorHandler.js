@@ -20,15 +20,23 @@ const handleError = (err, req, res, next) => {
 
     if (status === 500) {
         console.error(err);
-        if (err.oauthError) {
+        if (err.message === 'Failed to obtain access token' || err.oauthError) {
+            const oauthError = err.oauthError;
             let providerResponse;
             try {
-                providerResponse = JSON.parse(err.oauthError.data);
+                const data = oauthError?.data || '';
+                try {
+                    providerResponse = JSON.parse(data);
+                } catch {
+                    providerResponse = Object.fromEntries(new URLSearchParams(data));
+                }
             } catch {
                 providerResponse = {};
             }
             console.error('OAuth token exchange failed', {
-                statusCode: err.oauthError.statusCode,
+                errorName: err.name,
+                hasOAuthError: Boolean(oauthError),
+                statusCode: oauthError?.statusCode,
                 error: providerResponse.error,
                 errorDescription: providerResponse.error_description
             });
