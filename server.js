@@ -16,6 +16,7 @@ if (process.env.NODE_ENV === 'production' && !sessionSecret) {
 }
 
 app.use(express.json());
+app.enable('trust proxy');
 app.use(session({
     secret: sessionSecret || 'local-development-only-secret',
     resave: false,

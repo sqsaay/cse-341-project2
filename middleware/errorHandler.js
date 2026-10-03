@@ -20,6 +20,19 @@ const handleError = (err, req, res, next) => {
 
     if (status === 500) {
         console.error(err);
+        if (err.oauthError) {
+            let providerResponse;
+            try {
+                providerResponse = JSON.parse(err.oauthError.data);
+            } catch {
+                providerResponse = {};
+            }
+            console.error('OAuth token exchange failed', {
+                statusCode: err.oauthError.statusCode,
+                error: providerResponse.error,
+                errorDescription: providerResponse.error_description
+            });
+        }
     }
 
     return res.status(status).json({ message });
