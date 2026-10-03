@@ -17,11 +17,11 @@ const PORT = process.env.PORT || 3010;
 
 app.use(express.json());
 app.enable('trust proxy');
-app.use(session({
-    secret: sessionSecret || 'local-development-only-secret',
-    resave: false,
-    saveUninitialized: false
-}));
+// app.use(session({
+//     secret: sessionSecret || 'local-development-only-secret',
+//     resave: false,
+//     saveUninitialized: false
+// }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
