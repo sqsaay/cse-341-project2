@@ -9,19 +9,13 @@ const app = express();
 const { notFound, handleError } = require('./middleware/errorHandler');
 
 const PORT = process.env.PORT || 3010;
-// const sessionSecret = process.env.SESSION_SECRET;
-
-// if (process.env.NODE_ENV === 'production' && !sessionSecret) {
-//     throw new Error('SESSION_SECRET must be set in production');
-// }
 
 app.use(express.json());
-app.enable('trust proxy');
-// app.use(session({
-//     secret: sessionSecret || 'local-development-only-secret',
-//     resave: false,
-//     saveUninitialized: false
-// }));
+app.use(session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: true,
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors({
