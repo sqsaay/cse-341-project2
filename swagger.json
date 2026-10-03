@@ -8,7 +8,52 @@
   "host": "cse-341-project2-2szy.onrender.com",
   "basePath": "/",
   "schemes": ["https"],
+  "securityDefinitions": {
+    "sessionCookie": {
+      "type": "apiKey",
+      "name": "Cookie",
+      "in": "header",
+      "description": "GitHub login session cookie. After signing in, the browser sends the connect.sid cookie automatically."
+    }
+  },
   "paths": {
+    "/": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Show the GitHub login or logout link",
+        "responses": {
+          "200": { "description": "Home page returned" }
+        }
+      }
+    },
+    "/login": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Start GitHub OAuth login",
+        "responses": {
+          "302": { "description": "Redirect to GitHub for authorization" }
+        }
+      }
+    },
+    "/github/callback": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Handle the GitHub OAuth callback",
+        "responses": {
+          "302": { "description": "Redirect to the home page on success or API docs on failure" }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Log out and clear the session",
+        "responses": {
+          "302": { "description": "Redirect to the home page" },
+          "500": { "description": "Logout failed" }
+        }
+      }
+    },
     "/owners/": {
       "get": {
         "tags": ["Owners"],
@@ -22,6 +67,7 @@
       "post": {
         "tags": ["Owners"],
         "summary": "Create an owner",
+        "security": [{ "sessionCookie": [] }],
         "consumes": ["application/json"],
         "parameters": [
           {
@@ -34,6 +80,7 @@
         "responses": {
           "201": { "description": "Owner created" },
           "400": { "description": "Invalid owner" },
+          "401": { "description": "You do not have access" },
           "500": { "description": "Internal server error" }
         }
       }
@@ -61,6 +108,7 @@
       "put": {
         "tags": ["Owners"],
         "summary": "Replace an owner",
+        "security": [{ "sessionCookie": [] }],
         "consumes": ["application/json"],
         "parameters": [
           {
@@ -79,6 +127,7 @@
         "responses": {
           "204": { "description": "Owner updated" },
           "400": { "description": "Invalid request or ID" },
+          "401": { "description": "You do not have access" },
           "404": { "description": "Owner not found" },
           "500": { "description": "Internal server error" }
         }
@@ -86,6 +135,7 @@
       "delete": {
         "tags": ["Owners"],
         "summary": "Delete an owner",
+        "security": [{ "sessionCookie": [] }],
         "parameters": [
           {
             "name": "id",
@@ -97,6 +147,7 @@
         "responses": {
           "204": { "description": "Owner deleted" },
           "400": { "description": "Invalid ID" },
+          "401": { "description": "You do not have access" },
           "404": { "description": "Owner not found" },
           "500": { "description": "Internal server error" }
         }
@@ -115,6 +166,7 @@
       "post": {
         "tags": ["Pets"],
         "summary": "Create a pet",
+        "security": [{ "sessionCookie": [] }],
         "consumes": ["application/json"],
         "parameters": [
           {
@@ -127,6 +179,7 @@
         "responses": {
           "201": { "description": "Pet created" },
           "400": { "description": "Invalid pet" },
+          "401": { "description": "You do not have access" },
           "500": { "description": "Internal server error" }
         }
       }
@@ -154,6 +207,7 @@
       "put": {
         "tags": ["Pets"],
         "summary": "Replace a pet",
+        "security": [{ "sessionCookie": [] }],
         "consumes": ["application/json"],
         "parameters": [
           {
@@ -172,6 +226,7 @@
         "responses": {
           "204": { "description": "Pet updated" },
           "400": { "description": "Invalid request or ID" },
+          "401": { "description": "You do not have access" },
           "404": { "description": "Pet not found" },
           "500": { "description": "Internal server error" }
         }
@@ -179,6 +234,7 @@
       "delete": {
         "tags": ["Pets"],
         "summary": "Delete a pet",
+        "security": [{ "sessionCookie": [] }],
         "parameters": [
           {
             "name": "id",
@@ -190,6 +246,7 @@
         "responses": {
           "204": { "description": "Pet deleted" },
           "400": { "description": "Invalid ID" },
+          "401": { "description": "You do not have access" },
           "404": { "description": "Pet not found" },
           "500": { "description": "Internal server error" }
         }
