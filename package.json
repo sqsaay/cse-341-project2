@@ -18,9 +18,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "dotenv": "^18.0.4",
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "mongodb": "^7.6.0",
+    "passport-github2": "^0.1.12",
+    "passport": "^0.7.0",
     "swagger-ui-express": "^5.0.1"
   }
 }
